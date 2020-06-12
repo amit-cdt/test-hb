@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Configuring gimme-aws-creds profile
+echo "Configuring gimme-aws-creds profile.."
+echo "====================="
+if [ ! -f ~/.okta_aws_login_config ]; then
+  echo "Creating okta config file"
+  touch ~/.okta_aws_login_config
+  #Adding Default Profile with no data
+  echo "[DEFAULT]" >> ~/.okta_aws_login_config
+  else
+    echo "Okta config file is already there..."
+  fi    
+
+#Configure aws-global profile
+echo "Configuring aws-global profile"
+echo "====================="
+gimme-aws-creds --action-configure
+echo "Your profile is configured for okta now, continuing for registering MFA now..."
+
+#Register MFA Device
+echo "Registering MFA now for gimme-aws-creds"
+echo "====================="
+gimme-aws-creds --profile aws-global --register_device
+echo "MFA registration is done"
+echo "====================="
+#Load aws-gloabl profile
+echo "Loading aws-global okta profile"
+gimme-aws-creds --profile aws-global
+
+echo "All gimme-aws-creds configuration done"
+############################################################
+############## kubectl configuration files #################
+############################################################
+
+echo
+echo "______________________________________________________"
+echo "                  KUBECONFIG FILES"
+echo
+echo "Copying kubeconfig files to $HOME/.kube"
+# Ensure ~/.kube and helm folder exists
+mkdir -p $HOME/.kube
